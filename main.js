@@ -3,6 +3,8 @@ const electron = require('electron')
 const app = electron.app
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
+const TouchBar = electron.TouchBar
+const TouchBarScrubber = TouchBar.TouchBarScrubber
 
 const path = require('path')
 const url = require('url')
@@ -21,6 +23,31 @@ function createWindow () {
     protocol: 'file:',
     slashes: true
   }))
+
+  let items = []
+	for (var i=0,len=50;i<len;i++) {
+		items.push({label: 'Item ' + i});
+	}
+
+	let scrubber = new TouchBarScrubber({
+		items: items,
+		selectedStyle: 'outline',
+    mode: 'free',
+    // No matter if it's true or false, it will behave the same
+		continuous: false,
+		select: (index) => {
+			console.log('selected', index);
+		},
+		highlight: (index) => {
+			console.log('highlighted', index);
+		}
+	})
+
+	let touchBar = new TouchBar({
+		items: [scrubber]
+	})
+
+	mainWindow.setTouchBar(touchBar)
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
